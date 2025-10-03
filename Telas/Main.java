@@ -5,36 +5,44 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-   private static Stage stage;
-   private static Scene login;
-   private static Scene cadastro;
+    private static Stage stage;
+    private static Scene login;
+    private static Scene cadastro;
 
-   public Main() {
-   }
+    public Main() {}
 
-   public void start(Stage var1) {
-      stage = var1;
-      LoginView var2 = new LoginView();
-      CadastroView var3 = new CadastroView();
-      login = new Scene(var2.getView(), 400.0, 250.0);
-      cadastro = new Scene(var3.getView(), 400.0, 300.0);
-      var1.setTitle("PetShop Brainrot");
-      var1.setScene(login);
-      var1.show();
-   }
+    @Override
+    public void start(Stage primaryStage) {
+        stage = primaryStage;
 
-   public static void trocarTela(String var0) {
-      if (var0.equals("cadastro")) {
-         stage.setScene(cadastro);
-      } else if (var0.equals("login")) {
-         stage.setScene(login);
-      }
+        LoginView loginView = new LoginView();
+        CadastroView cadastroView = new CadastroView();
 
-   }
+        login = new Scene(loginView.getView(), 900, 800);
+        cadastro = new Scene(cadastroView.getView(), 900, 800);
 
-   public static void main(String[] var0) {
-      launch(var0);
-   }
+       
+        login.getStylesheets().add("css/light.css");
+        cadastro.getStylesheets().add("css/light.css");
+
+        primaryStage.setTitle("PetShop Brainrot");
+        primaryStage.setScene(login);
+        primaryStage.show();
+    }
+
+    public static void trocarTela(String tela) {
+        if ("cadastro".equals(tela)) {
+            stage.setScene(cadastro);
+        } else if ("login".equals(tela)) {
+            stage.setScene(login);
+        }
+    }
+
+    public static Scene getSceneAtual() {
+        return stage.getScene();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
-
-
