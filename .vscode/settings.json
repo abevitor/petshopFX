@@ -3,13 +3,14 @@
         "."
     ],
     "java.project.referencedLibraries": [
-        "c:\\JavaFx\\lib\\javafx.base.jar",
-        "c:\\JavaFx\\lib\\javafx.controls.jar",
+        "c:\\jdbc\\mysql-connector-j-9.4.0.jar",
         "c:\\JavaFx\\lib\\javafx.fxml.jar",
+        "c:\\JavaFx\\lib\\javafx.web.jar",
         "c:\\JavaFx\\lib\\javafx.graphics.jar",
         "c:\\JavaFx\\lib\\javafx.media.jar",
         "c:\\JavaFx\\lib\\javafx.swing.jar",
-        "c:\\JavaFx\\lib\\javafx.web.jar",
-        "c:\\JavaFx\\lib\\javafx-swt.jar"
+        "c:\\JavaFx\\lib\\javafx-swt.jar",
+        "c:\\JavaFx\\lib\\javafx.base.jar",
+        "c:\\JavaFx\\lib\\javafx.controls.jar"
     ]
 }
