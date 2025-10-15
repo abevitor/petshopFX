@@ -20,6 +20,8 @@ public class PrincipalView {
     public PrincipalView() {
         layout = new BorderPane();
 
+         layout.setStyle("-fx-font-family: 'Segoe UI', 'Roboto', sans-serif;");
+
         // 🌙 Botão de tema (Lua / Sol)
         Button btnTema = new Button("\uD83C\uDF19"); // Lua
         btnTema.setStyle("-fx-background-color: transparent; -fx-font-size: 20px;");
@@ -148,9 +150,9 @@ public class PrincipalView {
         botao.setPrefSize(220, 100);
         botao.setWrapText(true);
 
-        String baseStyle = "-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; "
+        String baseStyle = "-fx-background-color: #0a22acff; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;";
-        String hoverStyle = "-fx-background-color: #45A049; -fx-text-fill: white; -fx-font-size: 14px; "
+        String hoverStyle = "-fx-background-color: #17238dff; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;";
 
         botao.setStyle(baseStyle);

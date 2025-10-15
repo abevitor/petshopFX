@@ -3,14 +3,13 @@ package Telas;
 import DAO.UsuarioDAO;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+
 
 public class CadastroView {
 
     private BorderPane layoutCadastro;
 
-    // ✅ Campos como atributos
     private TextField txtNome;
     private TextField txtEmail;
     private PasswordField txtSenha;
@@ -19,8 +18,13 @@ public class CadastroView {
     public CadastroView() {
         layoutCadastro = new BorderPane();
 
-        // ===== Botão modo claro/escuro no topo =====
+        // ===== Fundo com imagem borrada =====
+
+        StackPane root = new StackPane( layoutCadastro);
+
+        // ===== Botão de modo escuro/claro =====
         Button btnTema = new Button("\uD83C\uDF19");
+        btnTema.setStyle("-fx-background-color: transparent; -fx-font-size: 20px;");
         btnTema.setOnAction(e -> {
             if (layoutCadastro.getScene() != null) {
                 if (btnTema.getText().equals("\uD83C\uDF19")) {
@@ -37,20 +41,18 @@ public class CadastroView {
         layoutCadastro.setTop(btnTema);
         BorderPane.setAlignment(btnTema, Pos.TOP_LEFT);
 
-        // ===== Campos centrais =====
+        // ===== Conteúdo central =====
         VBox centro = new VBox(10);
         centro.setAlignment(Pos.CENTER);
 
         Label lblNomeLabel = new Label("Nome:");
         txtNome = new TextField();
         txtNome.setMaxWidth(500);
-        txtNome.setStyle("-fx-border-color: gray; -fx-border-width: 1.5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;");
 
         Label lblEmailLabel = new Label("Email:");
         txtEmail = new TextField();
         txtEmail.setPromptText("exemplo@dominio.com");
         txtEmail.setMaxWidth(500);
-        txtEmail.setStyle("-fx-border-color: gray; -fx-border-width: 1.5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;");
 
         lblErroEmail = new Label();
         lblErroEmail.setStyle("-fx-text-fill: red;");
@@ -58,7 +60,6 @@ public class CadastroView {
         Label lblSenhaLabel = new Label("Senha:");
         txtSenha = new PasswordField();
         txtSenha.setMaxWidth(500);
-        txtSenha.setStyle("-fx-border-color: gray; -fx-border-width: 1.5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 5;");
 
         Button btnSalvar = new Button("Salvar");
         Button btnVoltar = new Button("Voltar");
@@ -70,27 +71,29 @@ public class CadastroView {
 
             if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
                 lblErroEmail.setText("Preencha todos os campos!");
+                lblErroEmail.setStyle("-fx-text-fill: red;");
                 return;
             }
 
             if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
                 lblErroEmail.setText("Email inválido!");
+                lblErroEmail.setStyle("-fx-text-fill: red;");
                 return;
             }
 
             boolean sucesso = UsuarioDAO.cadastrar(nome, email, senha);
             if (sucesso) {
-                lblErroEmail.setStyle("-fx-text-fill: green;");
                 lblErroEmail.setText("Usuário cadastrado com sucesso!");
+                lblErroEmail.setStyle("-fx-text-fill: limegreen;");
                 limparCampos();
             } else {
-                lblErroEmail.setStyle("-fx-text-fill: red;");
                 lblErroEmail.setText("Erro ao cadastrar! Email já existe?");
+                lblErroEmail.setStyle("-fx-text-fill: red;");
             }
         });
 
         btnVoltar.setOnAction(e -> {
-            limparCampos(); // ✅ Limpa ao voltar para login
+            limparCampos();
             Main.trocarTela("login");
         });
 
@@ -103,9 +106,14 @@ public class CadastroView {
         );
 
         layoutCadastro.setCenter(centro);
+
+        
+        layoutCadastro.setStyle("-fx-font-family: 'Segoe UI', 'Roboto', sans-serif;");
+
+        
+        layoutCadastro = new BorderPane(root);
     }
 
-    // ✅ Método para limpar campos
     public void limparCampos() {
         txtNome.clear();
         txtEmail.clear();
@@ -117,3 +125,4 @@ public class CadastroView {
         return layoutCadastro;
     }
 }
+
