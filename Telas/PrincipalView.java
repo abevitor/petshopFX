@@ -1,5 +1,6 @@
 package Telas;
 
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,17 +13,20 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 public class PrincipalView {
 
+    private StackPane root;
     private BorderPane layout;
+    private VBox menuLateral;
+    private boolean menuAberto = false;
 
     public PrincipalView() {
         layout = new BorderPane();
+        layout.setStyle("-fx-font-family: 'Segoe UI', 'Roboto', sans-serif;");
 
-         layout.setStyle("-fx-font-family: 'Segoe UI', 'Roboto', sans-serif;");
-
-        // 🌙 Botão de tema (Lua / Sol)
+        // 🌙 Botão de tema
         Button btnTema = new Button("\uD83C\uDF19"); // Lua
         btnTema.setStyle("-fx-background-color: transparent; -fx-font-size: 20px;");
         btnTema.setOnAction(e -> {
@@ -39,6 +43,11 @@ public class PrincipalView {
             }
         });
 
+        // 🍔 Botão de menu hambúrguer
+        Button btnMenu = new Button("☰");
+        btnMenu.setStyle("-fx-background-color: transparent; -fx-font-size: 20px;");
+        btnMenu.setOnAction(e -> alternarMenuLateral());
+
         // 🐾 Títulos
         Text tituloPrincipal = new Text("Seja bem-vindo ao Petshop!");
         tituloPrincipal.setFont(Font.font("Arial", 28));
@@ -49,14 +58,14 @@ public class PrincipalView {
         VBox titulosBox = new VBox(6, tituloPrincipal, tituloServicos);
         titulosBox.setAlignment(Pos.CENTER);
 
-        // Container superior com botão de tema + títulos
-        BorderPane topContainer = new BorderPane();
-        topContainer.setLeft(btnTema);
-        topContainer.setCenter(titulosBox);
-        BorderPane.setAlignment(btnTema, Pos.TOP_LEFT);
-        BorderPane.setAlignment(titulosBox, Pos.CENTER);
-        topContainer.setPadding(new Insets(10));
+        // Container superior
+        HBox topLeft = new HBox(10, btnMenu, btnTema);
+        topLeft.setAlignment(Pos.CENTER_LEFT);
 
+        BorderPane topContainer = new BorderPane();
+        topContainer.setLeft(topLeft);
+        topContainer.setCenter(titulosBox);
+        topContainer.setPadding(new Insets(10));
         layout.setTop(topContainer);
 
         // ====== GRID DE BOTÕES ======
@@ -73,10 +82,8 @@ public class PrincipalView {
         Button btnUnhas = criarBotao("💅 Cortar Unhas");
         Button btnSpa = criarBotao("🌸 Spa");
         Button btnCompleto = criarBotao("💎 Serviço Completo");
-        Button btnPerfil = criarBotao("👤 Perfil");
-        Button btnSair = criarBotao("🚪 Sair");
 
-        Button[] botoes = { btnCadastrar, btnBanho, btnTosa, btnCabelo, btnUnhas, btnSpa, btnCompleto, btnPerfil, btnSair };
+        Button[] botoes = {btnCadastrar, btnBanho, btnTosa, btnCabelo, btnUnhas, btnSpa, btnCompleto};
 
         int col = 0, row = 0;
         for (Button b : botoes) {
@@ -88,13 +95,64 @@ public class PrincipalView {
             }
         }
 
-        // Botão de sair com pop-up de confirmação
-        btnSair.setOnAction(e -> mostrarPopupSair());
-
         layout.setCenter(grid);
+
+        // ====== MENU LATERAL ======
+        menuLateral = criarMenuLateral();
+        menuLateral.setMouseTransparent(true);
+
+        // Cria o StackPane para sobrepor menu
+        root = new StackPane(layout, menuLateral);
+        StackPane.setAlignment(menuLateral, Pos.TOP_LEFT);
     }
 
-    // ===== POPUP DE CONFIRMAÇÃO =====
+    private VBox criarMenuLateral() {
+        VBox menu = new VBox(20);
+        menu.setPadding(new Insets(30));
+        menu.setAlignment(Pos.TOP_LEFT);
+        menu.setPrefWidth(180); // largura reduzida
+        menu.setStyle("-fx-background-color: #001F8E;");
+
+        Button btnPerfil = criarBotaoMenu("👤 Perfil");
+        Button btnConfig = criarBotaoMenu("⚙️ Configurações");
+        Button btnPagamentos = criarBotaoMenu("💳 Pagamentos");
+        Button btnSair = criarBotaoMenu("🚪 Sair");
+
+        btnSair.setOnAction(e -> mostrarPopupSair());
+
+        menu.getChildren().addAll(btnPerfil, btnConfig, btnPagamentos, btnSair);
+        menu.setTranslateX(-180); // começa escondido
+
+        return menu;
+    }
+
+    private Button criarBotaoMenu(String texto) {
+        Button btn = new Button(texto);
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; "
+                + "-fx-font-size: 16px; -fx-font-weight: bold; -fx-cursor: hand;");
+        btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color: rgba(255,255,255,0.2); "
+                + "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"));
+        btn.setOnMouseExited(e -> btn.setStyle("-fx-background-color: transparent; "
+                + "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"));
+        return btn;
+    }
+
+    private void alternarMenuLateral() {
+        TranslateTransition anim = new TranslateTransition(Duration.millis(300), menuLateral);
+
+        if (!menuAberto) {
+            menuLateral.setMouseTransparent(false);
+            anim.setToX(0);
+        } else {
+            anim.setToX(-180);
+            anim.setOnFinished(e -> menuLateral.setMouseTransparent(true));
+        }
+
+        menuAberto = !menuAberto;
+        anim.play();
+    }
+
     private void mostrarPopupSair() {
         BoxBlur blur = new BoxBlur(5, 5, 3);
         layout.setEffect(blur);
@@ -107,7 +165,6 @@ public class PrincipalView {
         popBox.setAlignment(Pos.CENTER);
         popBox.setPadding(new Insets(25));
         popBox.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(15), Insets.EMPTY)));
-        popBox.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, new CornerRadii(15), BorderWidths.DEFAULT)));
 
         Text mensagem = new Text("Tem certeza que deseja sair?");
         mensagem.setFont(Font.font("Arial", 18));
@@ -135,7 +192,7 @@ public class PrincipalView {
         btnSim.setOnAction(e -> {
             popup.close();
             layout.setEffect(null);
-            Main.trocarTela("login"); // volta para a tela de login
+            Main.trocarTela("login");
         });
 
         btnCancel.setOnAction(e -> {
@@ -144,30 +201,27 @@ public class PrincipalView {
         });
     }
 
-    // ===== CRIADOR DE BOTÕES =====
     private Button criarBotao(String texto) {
         Button botao = new Button(texto);
         botao.setPrefSize(220, 100);
         botao.setWrapText(true);
 
-        String baseStyle = "-fx-background-color: #0a22acff; -fx-text-fill: white; -fx-font-size: 14px; "
+        String baseStyle = "-fx-background-color: #0a22ac; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;";
-        String hoverStyle = "-fx-background-color: #17238dff; -fx-text-fill: white; -fx-font-size: 14px; "
+        String hoverStyle = "-fx-background-color: #17238d; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;";
 
         botao.setStyle(baseStyle);
         botao.setOnMouseEntered(e -> botao.setStyle(hoverStyle));
         botao.setOnMouseExited(e -> botao.setStyle(baseStyle));
 
-        // Ação genérica
         botao.setOnAction(e -> System.out.println("Botão clicado: " + texto));
 
         return botao;
     }
 
-    public BorderPane getView() {
-        return layout;
+    public StackPane getView() {
+        return root;
     }
 }
-
 
