@@ -21,6 +21,7 @@ public class PrincipalView {
     private BorderPane layout;
     private VBox menuLateral;
     private boolean menuAberto = false;
+    private Region overlay; // camada escura ao fundo
 
     public PrincipalView() {
         layout = new BorderPane();
@@ -101,8 +102,16 @@ public class PrincipalView {
         menuLateral = criarMenuLateral();
         menuLateral.setMouseTransparent(true);
 
-        // Cria o StackPane para sobrepor menu
-        root = new StackPane(layout, menuLateral);
+        // ====== OVERLAY (fundo escurecido) ======
+        overlay = new Region();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4);");
+        overlay.setVisible(false);
+        overlay.setOnMouseClicked(e -> {
+            if (menuAberto) alternarMenuLateral(); // fecha menu ao clicar fora
+        });
+
+        // Cria o StackPane para sobrepor menu e overlay
+        root = new StackPane(layout, overlay, menuLateral);
         StackPane.setAlignment(menuLateral, Pos.TOP_LEFT);
     }
 
@@ -110,7 +119,8 @@ public class PrincipalView {
         VBox menu = new VBox(20);
         menu.setPadding(new Insets(30));
         menu.setAlignment(Pos.TOP_LEFT);
-        menu.setPrefWidth(180); // largura reduzida
+        menu.setPrefWidth(180);
+        menu.setMaxWidth(180);
         menu.setStyle("-fx-background-color: #001F8E;");
 
         Button btnPerfil = criarBotaoMenu("👤 Perfil");
@@ -121,7 +131,7 @@ public class PrincipalView {
         btnSair.setOnAction(e -> mostrarPopupSair());
 
         menu.getChildren().addAll(btnPerfil, btnConfig, btnPagamentos, btnSair);
-        menu.setTranslateX(-180); // começa escondido
+        menu.setTranslateX(-180); // começa fora da tela
 
         return menu;
     }
@@ -140,13 +150,20 @@ public class PrincipalView {
 
     private void alternarMenuLateral() {
         TranslateTransition anim = new TranslateTransition(Duration.millis(300), menuLateral);
+        BoxBlur blur = new BoxBlur(5, 5, 3);
 
         if (!menuAberto) {
             menuLateral.setMouseTransparent(false);
             anim.setToX(0);
+            overlay.setVisible(true);
+            layout.setEffect(blur);
         } else {
             anim.setToX(-180);
-            anim.setOnFinished(e -> menuLateral.setMouseTransparent(true));
+            anim.setOnFinished(e -> {
+                menuLateral.setMouseTransparent(true);
+                overlay.setVisible(false);
+                layout.setEffect(null);
+            });
         }
 
         menuAberto = !menuAberto;
@@ -224,4 +241,3 @@ public class PrincipalView {
         return root;
     }
 }
-
