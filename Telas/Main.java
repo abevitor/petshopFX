@@ -5,56 +5,34 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private static Stage stage;
-    private static Scene login;
-    private static Scene cadastro;
-    private static Scene principal;
 
-    public Main() {}
+    private static Stage stage;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
+        stage.setTitle("PetShop Brainrot");
 
-        LoginView loginView = new LoginView();
-        CadastroView cadastroView = new CadastroView();
-        PrincipalView principalView = new PrincipalView();
+        // Tela inicial: login
+        LoginView login = new LoginView();
+        Scene scene = new Scene(login.getView(), 900, 650);
+        scene.getStylesheets().add("css/light.css"); // tema padrão
 
-        login = new Scene(loginView.getView(), 900, 800);
-        cadastro = new Scene(cadastroView.getView(), 900, 800);
-        principal = new Scene(principalView.getView(), 900, 650);
-
-       
-        login.getStylesheets().add("css/light.css");
-        cadastro.getStylesheets().add("css/light.css");
-        principal.getStylesheets().addAll("css./light.css");
-
-        primaryStage.setTitle("PetShop Brainrot");
-        primaryStage.setScene(login);
-        primaryStage.show();
+        stage.setScene(scene);
+        stage.show();
     }
 
-        public static void trocarTela(String nomeTela) {
-        switch (nomeTela) {
-            case "login":
-                stage.setScene(login);
-                break;
-            case "cadastro":
-                stage.setScene(cadastro);
-                break;
-            case "principal":
-                stage.setScene(principal);
-                break;
-            default:
-                System.out.println("Tela desconhecida: " + nomeTela);
+    // Método para trocar telas
+    public static void trocarTela(String tela) {
+        switch (tela) {
+            case "login" -> stage.setScene(new Scene(new LoginView().getView(), 900, 650));
+            case "cadastro" -> stage.setScene(new Scene(new CadastroView().getView(), 900, 650));
+            case "principal" -> stage.setScene(new Scene(new PrincipalView().getView(), 900, 650));
+            case "configuracoes" -> stage.setScene(new Scene(new ConfiguracoesView().getView(), 900, 650));
         }
-    }
-
-    public static Scene getSceneAtual() {
-        return stage.getScene();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

@@ -3,12 +3,10 @@ package DAO;
 import java.sql.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import DataBase.Database;
 
 public class UsuarioDAO {
 
-    // ======== MÉTODO PARA GERAR HASH DA SENHA ========
     private static String gerarHash(String senha) {
         try {
             MessageDigest msg = MessageDigest.getInstance("SHA-256");
@@ -24,7 +22,6 @@ public class UsuarioDAO {
         }
     }
 
-    // ======== CADASTRAR NOVO USUÁRIO ========
     public static boolean cadastrar(String nome, String email, String senha) {
         String sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
 
@@ -46,7 +43,6 @@ public class UsuarioDAO {
         }
     }
 
-    // ======== VALIDAR LOGIN ========
     public static boolean validarLogin(String email, String senhaDigitada) {
         String sql = "SELECT senha FROM usuarios WHERE email = ?";
 
@@ -69,7 +65,6 @@ public class UsuarioDAO {
         }
     }
 
-    // ======== ALTERAR SENHA ========
     public static boolean alterarSenha(String email, String novaSenha) {
         String sql = "UPDATE usuarios SET senha = ? WHERE email = ?";
 
@@ -86,7 +81,6 @@ public class UsuarioDAO {
         }
     }
 
-    // ======== ATUALIZAR FOTO DE PERFIL ========
     public static void atualizarFoto(String email, byte[] imagemBytes) {
         String sql = "UPDATE usuarios SET foto = ? WHERE email = ?";
 
@@ -102,7 +96,6 @@ public class UsuarioDAO {
         }
     }
 
-    // ======== CARREGAR FOTO DO USUÁRIO ========
     public static byte[] carregarFoto(String email) {
         String sql = "SELECT foto FROM usuarios WHERE email = ?";
 
@@ -122,7 +115,6 @@ public class UsuarioDAO {
         return null;
     }
 
-    // ======== OBTER NOME DO USUÁRIO (OU OUTRAS INFORMAÇÕES) ========
     public static String obterNomePorEmail(String email) {
         String sql = "SELECT nome FROM usuarios WHERE email = ?";
 

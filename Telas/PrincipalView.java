@@ -123,14 +123,17 @@ public class PrincipalView {
         menu.setMaxWidth(180);
         menu.setStyle("-fx-background-color: #001F8E;");
 
-        Button btnPerfil = criarBotaoMenu("👤 Perfil");
+    
         Button btnConfig = criarBotaoMenu("⚙️ Configurações");
         Button btnPagamentos = criarBotaoMenu("💳 Pagamentos");
         Button btnSair = criarBotaoMenu("🚪 Sair");
 
         btnSair.setOnAction(e -> mostrarPopupSair());
+        btnConfig.setOnAction(E -> {
+            Main.trocarTela("configuracoes");
+        });
 
-        menu.getChildren().addAll(btnPerfil, btnConfig, btnPagamentos, btnSair);
+        menu.getChildren().addAll( btnConfig, btnPagamentos, btnSair);
         menu.setTranslateX(-180); // começa fora da tela
 
         return menu;
